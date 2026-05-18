@@ -1,0 +1,71 @@
+<div class="page">
+
+  @if (toast) {
+    <div [class]="toastType === 'error' ? 'toast toast-error' : 'toast toast-success'">
+      {{ toast }}
+    </div>
+  }
+
+  @if (loading) {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Please wait...</p>
+    </div>
+  }
+
+  <div class="header">
+    <h2>👥 User Management</h2>
+    <button (click)="logout()" class="btn btn-logout">🚪 Logout</button>
+  </div>
+
+  <div class="card">
+    <h3>Add New User</h3>
+    <div class="form-row">
+      <input [(ngModel)]="name" placeholder="Enter name" class="input" />
+      <button (click)="addUser()" class="btn btn-primary" [disabled]="loading">➕ Add User</button>
+      <button (click)="getUsers()" class="btn btn-secondary" [disabled]="loading">🔄 Refresh</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>User List</h3>
+    @if (tableLoading) {
+      <div class="table-loading">
+        <div class="spinner-small"></div>
+        <span>Loading users...</span>
+      </div>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users; track user.id) {
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>
+              <span [class]="user.status === 'active' ? 'badge badge-active' : 'badge badge-disabled'">
+                {{ user.status }}
+              </span>
+            </td>
+            <td class="actions">
+              <button (click)="editUser(user)" class="btn btn-edit">✏️ Update</button>
+              @if (user.status === 'active') {
+                <button (click)="disableUser(user.id)" class="btn btn-disable">🚫 Disable</button>
+              } @else {
+                <button (click)="enableUser(user.id)" class="btn btn-enable">✅ Enable</button>
+              }
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
